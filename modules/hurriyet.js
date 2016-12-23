@@ -46,7 +46,7 @@ q = q.filter("Path eq '/"+self.enChars(filter)+"/'");
 }
 q.get().then(function(response){
 
-    callback(response.body);
+    callback(JSON.parse(response.body));
 
 });
 
