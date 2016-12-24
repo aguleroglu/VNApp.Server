@@ -75,8 +75,10 @@ client.message(req.query.q, {})
         if(category!=null){
         try{
         var n = parseInt(category);
-        count=n;
-        category = null;
+        if(n!=NaN || n!=undefined || n!=null){
+            count=n;
+            category = null;
+        }
         }
         catch(ex){}
         }
