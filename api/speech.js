@@ -131,6 +131,7 @@ client.message(req.query.q, {})
                     var query = { };
                         if(speechData.Emotion!=null){
                             query.Emotion=speechData.Emotion;
+                            speechData.Message = speechData.Count+" tane "+speechData.Emotion+" haber okuyorum.";
                         }
                         query.Path = {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"};
                         //{ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }
@@ -145,6 +146,7 @@ client.message(req.query.q, {})
                     var query = { };
                         if(speechData.Emotion!=null){
                             query.Emotion=speechData.Emotion;
+                            speechData.Message = speechData.Count+" tane "+speechData.Emotion+" haber okuyorum.";                            
                         }
                     var q = ".*yerel-haberler/"+enChars(speechData.Location).trim()+".";
                     query.Path = {$regex:q , $options:"i"};
@@ -160,6 +162,8 @@ client.message(req.query.q, {})
                     var query = { };
                         if(speechData.Emotion!=null){
                             query.Emotion=speechData.Emotion;
+                            speechData.Message = speechData.Count+" tane "+speechData.Emotion+" haber okuyorum.";                            
+                            
                         }
                     Article.find(query).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log('else '+dic);
@@ -173,6 +177,8 @@ client.message(req.query.q, {})
         var query = { };
                         if(speechData.Emotion!=null){
                             query.Emotion=speechData.Emotion;
+                            speechData.Message = speechData.Count+" tane "+speechData.Emotion+" haber okuyorum.";                            
+                            
                         }
                         query.$text = { $search : speechData.Category };
                         //{ $text : { $search : speechData.Category } }
@@ -228,6 +234,8 @@ client.message(req.query.q, {})
                         var query = { };
                         if(speechData.Emotion!=null){
                             query.Emotion=speechData.Emotion;
+                            speechData.Message = speechData.Count+" tane "+speechData.Emotion+" haber okuyorum.";                            
+                            
                         }
                         query.Path = {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"};
                         //{Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"}}
@@ -241,6 +249,8 @@ client.message(req.query.q, {})
                          var query = { };
                         if(speechData.Emotion!=null){
                             query.Emotion=speechData.Emotion;
+                            speechData.Message = speechData.Count+" tane "+speechData.Emotion+" haber okuyorum.";                            
+                            
                         }
                     Article.find(query).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log('else '+dic);
