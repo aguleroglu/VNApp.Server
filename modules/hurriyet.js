@@ -55,43 +55,24 @@ q = q.filter("Path eq '/"+self.enChars(filter)+"/'");
 }
 q.get().then(function(response){
 
-    callback(response.body);
+    callback(JSON.parse(response.body));
 
 });
-
-    // var f = filter!=null?("&%24filter=PATH%20eq%20'/"+filter+"/"):"";
-    // var opt = self.options("articles","","?%24top="+top,"&%24select="+select,f);
-    // console.log(opt);
-    //     var request = http.request(opt,function(res){
-    //         var datas =  [];
-    //         res.on("data",function(data){
-    //             datas.push(data);
-    //         });
-
-    //         res.on("end",function(){
-    //             var data = Buffer.concat(datas);
-    //             //console.log(data.toString());
-    //             callback(JSON.parse(data.toString()));
-    //         });
-    //     });
-    //     request.end();
     }
 
-    self.getSingleArticle = function(Id,select,callback)
+    self.getSingleArticle = function(articleId,select,callback)
     {
-         var opt = self.options("articles",Id,"","?%24select="+select);
-         var request = http.request(opt,function(res){
-             var datas = [];
-             res.on("data",function(data){
-                 datas.push(data);
-             });
-             res.on("end",function(data){
 
-                 var data = Buffer.concat(datas);
-                 callback(data.toString());
-             });
-         });
-         request.end();
+var q = odata({service: 'https://api.hurriyet.com.tr/v1/articles/'+articleId,headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
+        q.select('Id').select('Title').select("Text");
+        for(var s in select){
+    q.select(select[s]);
+}
+        q.get().then(function(response){
+
+            callback(JSON.parse(response.body));
+
+        });
     }
 
     return self; 
