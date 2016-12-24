@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var Article = require('../models/Article.js');
-
+var Article = require('../models/Article.js'); 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
@@ -32,8 +31,8 @@ client.message(req.query.q, {})
                 res.json(speechData);
 
             });
-        }else{
-            Article.find({},function(err,dic){
+        }else{ 
+            Article.find({}).exec(function(err,dic){
                 console.log('else '+dic);
                 speechData.Data = dic;
                 res.json(speechData); 
