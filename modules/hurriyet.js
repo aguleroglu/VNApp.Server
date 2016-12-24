@@ -1,6 +1,6 @@
 var http = require('https');
 var odata = require('odata-client');
-
+var Article = require('../models/Article.js');
 var hurriyet = function(){
 
     var self = {};
@@ -18,6 +18,34 @@ var hurriyet = function(){
         return txt;
 
     } 
+self.syncArticles = function(){
+    self.getArticles(function(response){
+
+        response.forEach(function(element) {
+            Article.findOne({ArticleId:element.Id}).exec(function(err,dic){
+
+                if(err==null && dic==undefined){
+                    self.getSingleArticle(ele.Id,function(art){
+                        var article = new Article({
+                            ArticleId:art.articleId,
+                            Title:art.Title,
+                            Text:art.Text,
+                            Description:art.Description,
+                            Path:art.Path,
+                            Date:art.Date,
+                            ImageUrl:art.Files!=null?art.Files[0].ImageUrl:""
+                        });
+                        article.save();
+
+                    })
+                    
+                }
+
+            })
+        }, this);
+
+    })
+}
  //"path": "/v1/"+apiUrl+"?%24top="+l+"&%24select="+select,
 self.options = function(apiUrl,articleId,top,select,filter){
  var options = {
@@ -27,7 +55,9 @@ self.options = function(apiUrl,articleId,top,select,filter){
     "path": "/v1/"+apiUrl+articleId+top+select+filter,
     "headers": {
         "accept": "application/json",
-        "apikey": "e7de90624f1c4d01b404ba44b2d2d865"
+        // "apikey": "e7de90624f1c4d01b404ba44b2d2d865"
+        "apikey": "327c396d84c9491982f32e7c3625f908"
+        
     }
 };
 return options;
@@ -42,9 +72,9 @@ self.getListPaths = function(callback){
     });
 }
 
-self.getArticles = function(top,select,filter,callback){
+self.getArticles = function(callback){
 
-var q = odata({service: 'https://api.hurriyet.com.tr/v1/articles?$skip=50&top=50',headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
+var q = odata({service: 'https://api.hurriyet.com.tr/v1/articles?top=50',headers:{apikey:'327c396d84c9491982f32e7c3625f908'}});
 q.select('Id').select('Title');
 
 // for(var s in select){
@@ -53,21 +83,17 @@ q.select('Id').select('Title');
 // if(filter!=null){
 // q = q.filter("Path eq '/"+self.enChars(filter)+"/'");
 // }
-q.get().then(function(response){
+        q.get().then(function(response){
 
-    callback(JSON.parse(response.body));
+            callback(JSON.parse(response.body));
 
-});
+        });
     }
 
-    self.getSingleArticle = function(articleId,select,callback)
+    self.getSingleArticle = function(articleId,callback)
     {
 
 var q = odata({service: 'https://api.hurriyet.com.tr/v1/articles/'+articleId,headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
-        q.select('Id').select('Title').select("Text");
-        for(var s in select){
-    q.select(select[s]);
-}
         q.get().then(function(response){
 
             callback(JSON.parse(response.body));

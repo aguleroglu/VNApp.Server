@@ -55,6 +55,11 @@ client.message(req.query.q, {})
     }
 
     var type = data.entities.type!=undefined?data.entities.type[0].value:null;
+
+    if(type==null && request_type=="endof-read-interaction" && req.query.speechType!=null){
+        type = req.query.speechType;
+    }
+
     var count = data.entities.article_count!=undefined?data.entities.article_count[0].value:null;
 
     var location = data.entities.article_location!=undefined?data.entities.article_location[0].value:null;
