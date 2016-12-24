@@ -20,14 +20,20 @@ client.message(req.query.q, {})
     }
 
     var intent = data.entities.intent!=undefined?data.entities.intent[0].value:null;
-    var category = data.entities.location!=undefined?data.entities.location[0].value:null;
-    
+
+    var category = null;
+
+    if(intent=='search'){
+        category = data.entities.location!=undefined?data.entities.location[0].value:null;
+    }
     if(data.entities.article_category!=undefined){
         category = data.entities.article_category!=undefined?data.entities.article_category[0].value:null;
     }
 
     var type = data.entities.type!=undefined?data.entities.type[0].value:null;
     var count = data.entities.article_count!=undefined?data.entities.article_count[0].value:null;
+
+
 
     var speechData = {
        Intent:intent,
@@ -36,6 +42,7 @@ client.message(req.query.q, {})
        Count : count==null?3:count,
        Data:null
     }
+    
     if(request_type=='first-interaction'){
         if(speechData.Intent=='read'){
         if(speechData.Category!=null){
@@ -73,14 +80,14 @@ client.message(req.query.q, {})
         if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
             //Skip ve limite göre data dönmem lazım. Kategori
             if(speechData.Category!=null){
-            Article.find({Category:speechData.Category}).skip(skip).limit(speechData.Count).exec(function(err,dic){
+            Article.find({Category:speechData.Category}).skip(parseInt(skip)).limit(speechData.Count).exec(function(err,dic){
                 console.log(dic);
                 speechData.Data = dic;
                 res.json(speechData);
 
             });
         }else{ 
-            Article.find({}).skip(skip).limit(speechData.Count).exec(function(err,dic){
+            Article.find({}).skip(parseInt(skip)).limit(speechData.Count).exec(function(err,dic){
                 console.log('else '+dic);
                 speechData.Data = dic;
                 res.json(speechData); 
