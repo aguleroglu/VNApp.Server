@@ -17,7 +17,22 @@ var hurriyet = function(){
 
         return txt;
 
-    } 
+    };
+    self.emotionalizer = function(){
+        Article.find({Emotion:null}).exec(function(err,dic){
+            var arr = [];
+            arr.push(dic.Text);
+            var data = {text_list:arr};
+            var post_options = {
+                url:'https://api.monkeylearn.com/v2/classifiers/cl_eNJhqnTf/classify/',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token 249c8df93f28cd2c36a1d21b4fe41ffcc41c390f'
+                }
+  };
+        });
+    }
 self.syncArticles = function(){
     self.getArticles(function(response){
 

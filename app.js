@@ -19,11 +19,11 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-var hurriyet = require('./modules/hurriyet.js');
-var schedule = require('node-schedule');
-var j = schedule.scheduleJob('* 10 * * *', function(){
-  hurriyet.syncArticles();
-});
+// var hurriyet = require('./modules/hurriyet.js');
+// var schedule = require('node-schedule');
+// var j = schedule.scheduleJob('* 10 * * *', function(){
+//   hurriyet.syncArticles();
+// });
 
 
 // uncomment after placing your favicon in /public

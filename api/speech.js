@@ -71,6 +71,15 @@ client.message(req.query.q, {})
 
     var writer = data.entities.article_writer!=undefined?data.entities.article_writer[0].value:null;
 
+    var emotion = data.entities.article_emotion!=undefined?data.entities.article_emotion[0].value:null;
+  
+        try{
+        var n = parseInt(category);
+        count=n;
+        category = null;
+        }
+        catch(ex){}
+    
     var speechData = {
        Intent:intent,
        Category:category,
@@ -80,16 +89,22 @@ client.message(req.query.q, {})
        Error :false,
        Message : null,
        Location:location,
-       Writer:writer
+       Writer:writer,
+       Emotion:emotion==null?null:emotion.trim()
     }
     //Test Test
     if(request_type=='first-interaction'){
         if(speechData.Intent=='read'){
             if(speechData.Type=='column'){
                 if(speechData.Writer!=null){
+                    
                     var q = ".*"+speechData.Writer.trim()+".";
+                    var query = { WriterName: {$regex:q , $options:"i"} };
+                    if(speechData.Emotion!=null){
+                        //query.Emotion=speechData.Emotion;
+                    }
 
-                    Column.find({ WriterName: {$regex:q , $options:"i"} }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
+                    Column.find(query).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         speechData.Message=speechData.Writer +' yazarına ait '+speechData.Count+' köşe yazısı okunuyor.';
@@ -98,18 +113,27 @@ client.message(req.query.q, {})
                     });
                     }
                     else{
-                    Column.find({}).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
-                        console.log('else '+dic);
-                        speechData.Data = dic;
-                        speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
-                        res.json(speechData); 
-                    });
+                        var query = { };
+                        if(speechData.Emotion!=null){
+                            //query.Emotion=speechData.Emotion;
+                        }
+                        Column.find(query).sort({Date:-1}).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
+                            console.log('else '+dic);
+                            speechData.Data = dic;
+                            speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
+                            res.json(speechData); 
+                        });
                     }
             }
             else{
                 if(speechData.Category!=null){
-                    
-                    Article.find({ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
+                    var query = { };
+                        if(speechData.Emotion!=null){
+                            query.Emotion=speechData.Emotion;
+                        }
+                        query.Path = {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"};
+                        //{ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }
+                    Article.find(query).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         res.json(speechData);
@@ -117,8 +141,14 @@ client.message(req.query.q, {})
                     });
                 }
                 else if(speechData.Location!=null){
+                    var query = { };
+                        if(speechData.Emotion!=null){
+                            query.Emotion=speechData.Emotion;
+                        }
                     var q = ".*yerel-haberler/"+enChars(speechData.Location).trim()+".";
-                    Article.find({ Path: {$regex:q , $options:"i"} }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
+                    query.Path = {$regex:q , $options:"i"};
+                    //{ Path: {$regex:q , $options:"i"} }
+                    Article.find(query).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         res.json(speechData);
@@ -126,7 +156,11 @@ client.message(req.query.q, {})
                     });
 
                 }else{ 
-                    Article.find({}).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
+                    var query = { };
+                        if(speechData.Emotion!=null){
+                            query.Emotion=speechData.Emotion;
+                        }
+                    Article.find(query).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
                         res.json(speechData); 
@@ -135,7 +169,13 @@ client.message(req.query.q, {})
         }
     }
     else if(speechData.Intent == 'search'){
-        Article.find({ $text : { $search : speechData.Category } }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
+        var query = { };
+                        if(speechData.Emotion!=null){
+                            query.Emotion=speechData.Emotion;
+                        }
+                        query.$text = { $search : speechData.Category };
+                        //{ $text : { $search : speechData.Category } }
+        Article.find(query).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                 console.log(dic);
                 if(dic==null || dic.length==0){
                     speechData.Message = 'Böyle bir sonuç bulamadım.';
@@ -155,7 +195,13 @@ client.message(req.query.q, {})
         if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
             if(speechData.Type=='column'){
                 if(speechData.Writer!=null){
-                Column.find({ WriterName: {$regex:q , $options:"i"} }).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                    var query = { };
+                        if(speechData.Emotion!=null){
+                            //query.Emotion=speechData.Emotion;
+                        }
+                        query.WriterName = {$regex:q , $options:"i"};
+                        //{ WriterName: {$regex:q , $options:"i"} }
+                Column.find(query).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         speechData.Message=speechData.Writer +' yazarına ait '+speechData.Count+' köşe yazısı okunuyor.';
@@ -164,7 +210,11 @@ client.message(req.query.q, {})
                     });
                     }
                     else{
-                        Column.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                        var query = { };
+                        if(speechData.Emotion!=null){
+                            //query.Emotion=speechData.Emotion;
+                        }
+                        Column.find(query).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
                         speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
@@ -174,14 +224,24 @@ client.message(req.query.q, {})
             }
             else{
                     if(speechData.Category!=null){
-                    Article.find({Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"}}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                        var query = { };
+                        if(speechData.Emotion!=null){
+                            query.Emotion=speechData.Emotion;
+                        }
+                        query.Path = {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"};
+                        //{Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"}}
+                    Article.find(query).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         res.json(speechData);
 
                     });
                      }else{ 
-                    Article.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                         var query = { };
+                        if(speechData.Emotion!=null){
+                            query.Emotion=speechData.Emotion;
+                        }
+                    Article.find(query).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
                         res.json(speechData); 
