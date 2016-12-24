@@ -87,6 +87,7 @@ client.message(req.query.q, {})
                     Column.find({ WriterName: {$regex:q , $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
+                        speechData.Message=speechData.Writer +' yazarına ait '+speechData.Count+' köşe yazısı okunuyor.';
                         res.json(speechData);
 
                     });
@@ -95,6 +96,7 @@ client.message(req.query.q, {})
                     Column.find({}).limit(speechData.Count).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
+                        speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
                         res.json(speechData); 
                     });
                     }
