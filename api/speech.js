@@ -23,7 +23,7 @@ client.message(req.query.q, {})
 
     var category = null;
 
-    if(intent=='search'){
+    if(intent=='search' | intent=='read'){
         category = data.entities.location!=undefined?data.entities.location[0].value:null;
     }
     if(data.entities.article_category!=undefined){
