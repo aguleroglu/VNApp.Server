@@ -38,7 +38,14 @@ client.message(req.query.q, {})
     var category = null;
 
     if(intent=='search' | intent=='read'){
-        category = data.entities.location!=undefined?data.entities.location[0].value:null;
+        if(request_type=="endof-read-interaction" && intent=='read'){
+            if(req.query.category!=null){
+                category = req.query.category;
+            }
+        }
+        else{
+            category = data.entities.location!=undefined?data.entities.location[0].value:null;
+        }
     }
     if(data.entities.article_category!=undefined){
         category = data.entities.article_category!=undefined?data.entities.article_category[0].value:null;
@@ -48,7 +55,11 @@ client.message(req.query.q, {})
     var count = data.entities.article_count!=undefined?data.entities.article_count[0].value:null;
 
     var location = data.entities.article_location!=undefined?data.entities.article_location[0].value:null;
-
+    if(request_type=="endof-read-interaction" && intent=='read'){
+                if(req.query.location!=null){
+                    location = req.query.location;
+                }
+            }
 
     var speechData = {
        Intent:intent,
@@ -108,7 +119,6 @@ client.message(req.query.q, {})
     else if(request_type=='endof-read-interaction'){
         var skip = req.query.skip;
         if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
-            //Skip ve limite göre data dönmem lazım. Kategori
             if(speechData.Category!=null){
             Article.find({Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"}}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                 console.log(dic);
