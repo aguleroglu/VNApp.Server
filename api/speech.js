@@ -155,7 +155,7 @@ client.message(req.query.q, {})
         if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
             if(speechData.Type=='column'){
                 if(speechData.Writer!=null){
-                Column.find({ WriterName: {$regex:q , $options:"i"} }).sort({Date:-1}).skip(skip).limit(speechData.Count).exec(function(err,dic){
+                Column.find({ WriterName: {$regex:q , $options:"i"} }).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         speechData.Message=speechData.Writer +' yazarına ait '+speechData.Count+' köşe yazısı okunuyor.';
@@ -164,7 +164,7 @@ client.message(req.query.q, {})
                     });
                     }
                     else{
-                        Column.find({}).sort({Date:-1}).skip(skip).limit(speechData.Count).exec(function(err,dic){
+                        Column.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
                         speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
