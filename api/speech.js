@@ -84,7 +84,7 @@ client.message(req.query.q, {})
                 if(speechData.Writer!=null){
                     var q = ".*"+speechData.Writer.trim()+".";
 
-                    Column.find({ WriterName: {$regex:q , $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
+                    Column.find({ WriterName: {$regex:q , $options:"i"} }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         speechData.Message=speechData.Writer +' yazarına ait '+speechData.Count+' köşe yazısı okunuyor.';
@@ -104,7 +104,7 @@ client.message(req.query.q, {})
             else{
                 if(speechData.Category!=null){
                     
-                    Article.find({ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
+                    Article.find({ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         res.json(speechData);
@@ -113,7 +113,7 @@ client.message(req.query.q, {})
                 }
                 else if(speechData.Location!=null){
                     var q = ".*yerel-haberler/"+enChars(speechData.Location).trim()+".";
-                    Article.find({ Path: {$regex:q , $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
+                    Article.find({ Path: {$regex:q , $options:"i"} }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log(dic);
                         speechData.Data = dic;
                         res.json(speechData);
@@ -121,7 +121,7 @@ client.message(req.query.q, {})
                     });
 
                 }else{ 
-                    Article.find({}).limit(speechData.Count).exec(function(err,dic){
+                    Article.find({}).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
                         res.json(speechData); 
@@ -130,7 +130,7 @@ client.message(req.query.q, {})
         }
     }
     else if(speechData.Intent == 'search'){
-        Article.find({ $text : { $search : speechData.Category } }).limit(speechData.Count).exec(function(err,dic){
+        Article.find({ $text : { $search : speechData.Category } }).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                 console.log(dic);
                 if(dic==null || dic.length==0){
                     speechData.Message = 'Böyle bir sonuç bulamadım.';
@@ -156,7 +156,7 @@ client.message(req.query.q, {})
 
             });
         }else{ 
-            Article.find({}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+            Article.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                 console.log('else '+dic);
                 speechData.Data = dic;
                 res.json(speechData); 
