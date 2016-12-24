@@ -5,18 +5,18 @@ var hurriyet = require('../modules/hurriyet.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-// hurriyet.getArticles(5,"Id,Title,Path","",function(res){
+hurriyet.getArticles(50,"Id,Title,Path","",function(res){
+ 
+ console.log(res); 
+});
+ 
 
-//  var data = JSON.parse(res);
-//  data.forEach(function(element) {
-//    hurriyet.getSingleArticle("/"+element.Id,"Description",function(res){
-//   console.log(res);
-// });
-//  }, this);
+  // hurriyet.getSingleArticle("40199111","",function(result){
+ 
+  //           console.log(result); 
 
-
-// });
-
+  //       });
+ 
   res.render('index', { title: 'Express' });
 });
 
