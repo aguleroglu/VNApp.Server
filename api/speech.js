@@ -80,14 +80,14 @@ client.message(req.query.q, {})
         if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
             //Skip ve limite göre data dönmem lazım. Kategori
             if(speechData.Category!=null){
-            Article.find({Category:speechData.Category}).skip(parseInt(skip)).limit(speechData.Count).exec(function(err,dic){
+            Article.find({Category:speechData.Category}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                 console.log(dic);
                 speechData.Data = dic;
                 res.json(speechData);
 
             });
         }else{ 
-            Article.find({}).skip(parseInt(skip)).limit(speechData.Count).exec(function(err,dic){
+            Article.find({}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
                 console.log('else '+dic);
                 speechData.Data = dic;
                 res.json(speechData); 
