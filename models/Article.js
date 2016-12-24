@@ -11,7 +11,7 @@ var articleSchema = new Schema({
 
 
 });
-
+articleSchema.index({'$**': 'text'});
 var Article = mongoose.model('Article', articleSchema);
 
 // make this available to our users in our Node applications
