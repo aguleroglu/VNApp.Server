@@ -29,6 +29,10 @@ client.message(req.query.q, {})
             res.json(speechData);
 
         });
+
+        hurriyet.getListPaths(function(result){
+            console.log(result);
+        });
    
 
 } catch (err) {

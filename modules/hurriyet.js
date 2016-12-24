@@ -33,6 +33,15 @@ self.options = function(apiUrl,articleId,top,select,filter){
 return options;
 }
 
+self.getListPaths = function(callback){
+    var q = odata({service: 'https://api.hurriyet.com.tr/v1/', resources: 'paths',headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
+    q.get().then(function(response){
+
+        callback(response.body);
+
+    });
+}
+
 self.getArticles = function(top,select,filter,callback){
 
 var q = odata({service: 'https://api.hurriyet.com.tr/v1/', resources: 'articles',headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
