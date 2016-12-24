@@ -30,7 +30,7 @@ router.post('/signup',function(req,res, next){
 
 
 User.find({Email:req.body.email}).exec(function(err,response){
-    if(response==null){
+    if(response==null || response.length==0){
         console.log(req.body.password);
         var pwd = crypto.createHmac('sha256', secret)
                         .update(req.body.password)

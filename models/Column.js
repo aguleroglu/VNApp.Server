@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var articleSchema = new Schema({
+var columnSchema = new Schema({
 
     Title:String,
     Description:String,
@@ -9,11 +9,14 @@ var articleSchema = new Schema({
     Emotion:String,
     City:String,
     Path:String,
-    ImageUrl:String
+    ImageUrl:String,
+    WriterId:String,
+    WriterName:String,
+    Date:Date
 
 });
-articleSchema.index({'$**': 'text'});
-var Article = mongoose.model('Article', articleSchema);
+columnSchema.index({'$**': 'text'});
+var Column = mongoose.model('Column', columnSchema);
 
 // make this available to our users in our Node applications
-module.exports = Article;
+module.exports = Column;
