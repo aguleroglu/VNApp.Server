@@ -19,14 +19,11 @@ enChars = function(txt){
         return txt;
 
     } 
-/* GET home page. */
-router.get('/', function(req, res, next) { 
- 
- 
+/* GET home page. Test */ 
+router.get('/', function(req, res, next) {
+
 const {Wit, log} = require('node-wit');
 const client = new Wit({accessToken: 'PV5JC3Y42MSMBSTPWHGZ3P4UYQMRM66C'});
-client.message(req.query.q, {}) 
-.then((data) => { 
 client.message(req.query.q, {})
 .then((data) => {
     console.log(JSON.stringify(data));
@@ -36,7 +33,8 @@ client.message(req.query.q, {})
     if(req.query.type!=undefined){
         request_type = req.query.type;
     }
-  var intent = data.entities.intent!=undefined?data.entities.intent[0].value:null;
+
+    var intent = data.entities.intent!=undefined?data.entities.intent[0].value:null;
 
     var category = null;
 
@@ -71,7 +69,7 @@ client.message(req.query.q, {})
     var speechData = {
        Intent:intent,
        Category:category,
-       Type : type,  
+       Type : type,
        Count : count==null?3:count,
        Data:null,
        Error :false,
@@ -79,7 +77,7 @@ client.message(req.query.q, {})
        Location:location,
        Writer:writer
     }
-    
+    //Test Test
     if(request_type=='first-interaction'){
         if(speechData.Intent=='read'){
             if(speechData.Type=='column'){
@@ -157,34 +155,29 @@ client.message(req.query.q, {})
                 res.json(speechData);
 
             });
-       else
-        {
-            Article.find({}).then(function(err,dic){
-       }else{ 
-           Article.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
-           Article.find({}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
-               speechData.Data = dic;
+        }else{ 
+            Article.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                console.log('else '+dic);
+                speechData.Data = dic;
                 res.json(speechData); 
             });
         }
-   }
-    else
-    {
-
         }
         else if(speechData.Intent=='no' || speechData.Intent=='stop'){
             res.json(speechData);
+            //Deneme
         }
         else{
             res.json(speechData);
         }
     }
     else{
+
         res.json(speechData);
-    } 
+    }
+
 });
 
 });
-function getArticlesA(res){ 
-}
+
 module.exports = router;
