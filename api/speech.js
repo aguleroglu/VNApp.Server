@@ -72,13 +72,14 @@ client.message(req.query.q, {})
     var writer = data.entities.article_writer!=undefined?data.entities.article_writer[0].value:null;
 
     var emotion = data.entities.article_emotion!=undefined?data.entities.article_emotion[0].value:null;
-  
+        if(category!=null){
         try{
         var n = parseInt(category);
         count=n;
         category = null;
         }
         catch(ex){}
+        }
     
     var speechData = {
        Intent:intent,
