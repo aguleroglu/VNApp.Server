@@ -44,15 +44,15 @@ self.getListPaths = function(callback){
 
 self.getArticles = function(top,select,filter,callback){
 
-var q = odata({service: 'https://api.hurriyet.com.tr/v1/', resources: 'articles',headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
-q.top(top).select('Id').select('Title');
+var q = odata({service: 'https://api.hurriyet.com.tr/v1/articles?$skip=50&top=50',headers:{apikey:'e7de90624f1c4d01b404ba44b2d2d865'}});
+q.select('Id').select('Title');
 
-for(var s in select){
-    q.select(select[s]);
-}
-if(filter!=null){
-q = q.filter("Path eq '/"+self.enChars(filter)+"/'");
-}
+// for(var s in select){
+//     q.select(select[s]);
+// }
+// if(filter!=null){
+// q = q.filter("Path eq '/"+self.enChars(filter)+"/'");
+// }
 q.get().then(function(response){
 
     callback(JSON.parse(response.body));

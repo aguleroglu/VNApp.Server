@@ -5,9 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var speech = require('./api/speech');
+
+var mongoose = require('mongoose');
+    // mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://vn-user:Password1@ds145118.mlab.com:45118/vn-app',function(err) 
+{ 
+  if (err) console.log(err); 
+});
 
 var app = express();
 
@@ -23,10 +27,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+var routes = require('./routes/index');
+var user = require('./api/user');
+var speech = require('./api/speech');
 
+app.use('/', routes);
 app.use('/api/speech', speech);
+app.use('/api/user', user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
