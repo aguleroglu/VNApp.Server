@@ -38,9 +38,11 @@ client.message(req.query.q, {})
     var category = null;
 
     if(intent=='search' | intent=='read'){
-        if(request_type=="endof-read-interaction" && intent=='read'){
-            if(req.query.category!=null){
-                category = req.query.category;
+        if(request_type=="endof-read-interaction"){
+            if(intent=='read'){
+                if(req.query.category!=null){
+                    category = req.query.category;
+                }
             }
         }
         else{
