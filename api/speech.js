@@ -4,6 +4,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 
 var Article = require('../models/Article.js'); 
+var Column = require('../models/Column.js'); 
 enChars = function(txt){
         if(txt==null){
             return null;
@@ -63,6 +64,8 @@ client.message(req.query.q, {})
                 }
             }
 
+    var writer = data.entities.article_writer!=undefined?data.entities.article_writer[0].value:null;
+
     var speechData = {
        Intent:intent,
        Category:category,
@@ -71,35 +74,57 @@ client.message(req.query.q, {})
        Data:null,
        Error :false,
        Message : null,
-       Location:location
+       Location:location,
+       Writer:writer
     }
     
     if(request_type=='first-interaction'){
         if(speechData.Intent=='read'){
-        if(speechData.Category!=null){
-            
-            Article.find({ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
-                console.log(dic);
-                speechData.Data = dic;
-                res.json(speechData);
+            if(speechData.Type=='column'){
+                if(speechData.Writer!=null){
+                    var q = ".*"+speechData.Writer.trim()+".";
 
-            });
-        }
-        else if(speechData.Location!=null){
-            var q = ".*yerel-haberler/"+enChars(speechData.Location).trim()+".";
-            Article.find({ Path: {$regex:q , $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
-                console.log(dic);
-                speechData.Data = dic;
-                res.json(speechData);
+                    Column.find({ WriterName: {$regex:q , $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
+                        console.log(dic);
+                        speechData.Data = dic;
+                        res.json(speechData);
 
-            });
+                    });
+                    }
+                    else{
+                    Column.find({}).limit(speechData.Count).exec(function(err,dic){
+                        console.log('else '+dic);
+                        speechData.Data = dic;
+                        res.json(speechData); 
+                    });
+                    }
+            }
+            else{
+                if(speechData.Category!=null){
+                    
+                    Article.find({ Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
+                        console.log(dic);
+                        speechData.Data = dic;
+                        res.json(speechData);
 
-        }else{ 
-            Article.find({}).limit(speechData.Count).exec(function(err,dic){
-                console.log('else '+dic);
-                speechData.Data = dic;
-                res.json(speechData); 
-            });
+                    });
+                }
+                else if(speechData.Location!=null){
+                    var q = ".*yerel-haberler/"+enChars(speechData.Location).trim()+".";
+                    Article.find({ Path: {$regex:q , $options:"i"} }).limit(speechData.Count).exec(function(err,dic){
+                        console.log(dic);
+                        speechData.Data = dic;
+                        res.json(speechData);
+
+                    });
+
+                }else{ 
+                    Article.find({}).limit(speechData.Count).exec(function(err,dic){
+                        console.log('else '+dic);
+                        speechData.Data = dic;
+                        res.json(speechData); 
+                    });
+                }
         }
     }
     else if(speechData.Intent == 'search'){
