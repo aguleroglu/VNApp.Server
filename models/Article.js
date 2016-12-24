@@ -7,8 +7,9 @@ var articleSchema = new Schema({
     Text:String,
     Category:String,
     Emotion:String,
-    City:String
-
+    City:String,
+    Path:String,
+    ImageUrl:String
 
 });
 articleSchema.index({'$**': 'text'});
