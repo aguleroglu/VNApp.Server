@@ -70,10 +70,10 @@ client.message(req.query.q, {})
     }
     else if(request_type=='endof-read-interaction'){
         var skip = req.query.skip;
-        if(speechData.Intent=='read' || speechData.Intent=='continue'){
+        if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
             //Skip ve limite göre data dönmem lazım. Kategori
             if(speechData.Category!=null){
-            Article.find({Category:speechData.Category}).skip(skip).limit(speechData.Count).then(function(dic){
+            Article.find({Category:speechData.Category}).skip(skip).limit(speechData.Count).exec(function(err,dic){
                 console.log(dic);
                 speechData.Data = dic;
                 res.json(speechData);
@@ -88,6 +88,9 @@ client.message(req.query.q, {})
         }
         }
         else if(speechData.Intent=='no' || speechData.Intent=='stop'){
+            res.json(speechData);
+        }
+        else{
             res.json(speechData);
         }
     }
