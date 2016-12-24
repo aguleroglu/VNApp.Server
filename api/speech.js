@@ -98,7 +98,7 @@ client.message(req.query.q, {})
                     });
                     }
                     else{
-                    Column.find({}).limit(speechData.Count).exec(function(err,dic){
+                    Column.find({}).sort({Date:-1}).limit(speechData.Count).exec(function(err,dic){
                         console.log('else '+dic);
                         speechData.Data = dic;
                         speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
@@ -153,19 +153,40 @@ client.message(req.query.q, {})
     else if(request_type=='endof-read-interaction'){
         var skip = req.query.skip;
         if(speechData.Intent=='read' || speechData.Intent=='continue' || speechData.Intent=='yes'){
-            if(speechData.Category!=null){
-            Article.find({Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"}}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
-                console.log(dic);
-                speechData.Data = dic;
-                res.json(speechData);
+            if(speechData.Type=='column'){
+                if(speechData.Writer!=null){
+                Column.find({ WriterName: {$regex:q , $options:"i"} }).sort({Date:-1}).skip(skip).limit(speechData.Count).exec(function(err,dic){
+                        console.log(dic);
+                        speechData.Data = dic;
+                        speechData.Message=speechData.Writer +' yazarına ait '+speechData.Count+' köşe yazısı okunuyor.';
+                        res.json(speechData);
 
-            });
-        }else{ 
-            Article.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
-                console.log('else '+dic);
-                speechData.Data = dic;
-                res.json(speechData); 
-            });
+                    });
+                    }
+                    else{
+                        Column.find({}).sort({Date:-1}).skip(skip).limit(speechData.Count).exec(function(err,dic){
+                        console.log('else '+dic);
+                        speechData.Data = dic;
+                        speechData.Message='Son '+speechData.Count+' köşe yazısı okunuyor.';
+                        res.json(speechData); 
+                    });
+                    }
+            }
+            else{
+                    if(speechData.Category!=null){
+                    Article.find({Path: {$regex: ".*"+enChars(speechData.Category)+".", $options:"i"}}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                        console.log(dic);
+                        speechData.Data = dic;
+                        res.json(speechData);
+
+                    });
+                     }else{ 
+                    Article.find({}).sort({Date:-1}).skip(parseInt(skip)).limit(parseInt(speechData.Count)).exec(function(err,dic){
+                        console.log('else '+dic);
+                        speechData.Data = dic;
+                        res.json(speechData); 
+                    });
+                }
         }
         }
         else if(speechData.Intent=='no' || speechData.Intent=='stop'){
