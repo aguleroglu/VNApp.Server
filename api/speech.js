@@ -98,6 +98,7 @@ client.message(req.query.q, {})
        Writer:writer,
        Emotion:emotion==null?null:emotion.trim()
     }
+    speechData.Count = parseInt(speechData.Count);
     //Test Test
     if(request_type=='first-interaction'){
         if(speechData.Intent=='read'){
