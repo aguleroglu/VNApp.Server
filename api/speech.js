@@ -198,6 +198,9 @@ client.message(req.query.q, {})
 
             });
     }
+    else{
+        res.json(speechData);
+    }
     }
     else if(request_type=='after-read-interaction'){
         res.json(speechData);
